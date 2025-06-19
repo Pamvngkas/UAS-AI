@@ -1,0 +1,42 @@
+from collections import deque
+
+def bfs(graph, start, goal):
+    queue = deque([[start]])
+    visited = {start}
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        if node == goal:
+            return path
+        for neighbor, via in graph.get(node, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(path + [neighbor])
+    return None
+
+# Graph dengan nama jalan asli
+graph = {
+    "Pelabuhan Panjang": [("Gudang Campang", "Jl. Soekarno Hatta"),
+                          ("Gudang Pahoman", "Jl. Yos Sudarso → Jl. Gatot Subroto → Jl. Pahoman")
+                          ],
+    "Gudang Campang"   : [("Gudang Pahoman", "Jl. Soekarno Hatta → Jl. Antasari → Jl. Gajah Mada → Jl. Pahoman")],
+    "Gudang Pahoman"   : [("Gudang Campang", "Jl. Pahoman → Jl. Antasari → Jl. Soekarno Hatta "),
+                          ("Pelabuhan Panjang", "Jl. Pahoman → Jl. Gatot Subroto → Jl. Yos Sudarso")
+                          ]
+}
+
+def print_route(path):
+    print("Rute tercepat ditemukan:\n")
+    for a, b in zip(path, path[1:]):
+        via = next(v for nbr, v in graph[a] if nbr == b)
+        print(f"{a} ➝ {b} via {via}")
+    print(f"\nTotal hop: {len(path)-1}")
+
+start = "Gudang Pahoman"
+goal = "Pelabuhan Panjang"
+
+path = bfs(graph, start, goal)
+if path:
+    print_route(path)
+else:
+    print("Rute tidak ditemukan.")
