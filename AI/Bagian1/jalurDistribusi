@@ -1,0 +1,52 @@
+from collections import deque
+
+def bfs_shortest_path(graph, start, goal):
+    explored = set()
+    queue = deque([[start]])
+
+    if start == goal:
+        return [start]
+
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+
+        if node not in explored:
+            neighbors = graph.get(node, [])
+
+            for neighbor in neighbors:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+
+                if neighbor == goal:
+                    return new_path
+
+            explored.add(node)
+
+    return None
+
+
+graph = {
+    'Pelabuhan Panjang' : ['Jl. Yos Sudarso', 'Jl. Soekarno Hatta'],
+    'Jl. Yos Sudarso'   : ['Jl. Gatot Subroto', 'Pelabuhan Panjang'],
+    'Jl. Soekarno Hatta': ['Jl. Antasari', 'Pelabuhan Panjang', 'Gudang Campang'],        
+    'Gudang Campang'    : ['Jl. Soekarno Hatta'],
+    'Jl. Antasari'      : ['Jl. Soekarno Hatta', 'Jl. Gajah Mada', 'Jl. Pahoman'],
+    'Jl. Gajah Mada'    : ['Jl. Pahoman'],
+    'Jl. Pahoman'       : ['Jl. Gajah Mada', 'Jl. Gatot Subroto', 'Gudang Pahoman'],
+    'Gudang Pahoman'    : ['Jl. Pahoman'],
+    'Jl. Gatot Subroto' : ['Jl. Yos Sudarso', 'Jl. Pahoman']
+}
+
+start = 'Gudang Pahoman'
+goal = 'Pelabuhan Panjang'
+
+path = bfs_shortest_path(graph, start, goal)
+
+if path:
+    print("Jalur Terpendek :")
+    for idx, jalan in enumerate(path, 1):
+        print(f"{idx}. {jalan}")
+else:
+    print("Jalur tidak ditemukan.")
